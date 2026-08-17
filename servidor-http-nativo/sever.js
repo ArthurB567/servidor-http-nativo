@@ -9,6 +9,7 @@ const server = http.createServer((req, res) => {
     res.statusCode = 201;
     res.setHeader('Content-Type', 'application/json');
         
+    //sem o res.end a aplicação não carrega
     res.end(JSON.stringify({ status: "ok" }));
 });
 
