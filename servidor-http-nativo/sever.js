@@ -1,38 +1,68 @@
-import http from 'node:http'
-import { URL } from 'node:url'
+const http = require("node:http");
 
-const PORTA = 3000
-const produtos = [
-    {id: 1, nome: "Sabonete"},
-    {id: 2, nome: "Volante Logitech"},
-    {id: 3, nome: "Sabão em Pó"},
-    {id: 4, nome: "Pelucia do Sonic"}
+const port = 3000;
+
+const contatoObj = {
+	data: {
+		numero_telefone: "67 99999-9999",
+		endereco_email: "alo@gmail.com",
+	}
+}
+
+const produtosLista = [
+	{
+		data: [
+			{id: 1, nome: "RTX 4090 ti"},
+			{id: 2, nome: "Pastilhas"},
+			{id: 3, nome: "Capacete de Moto"}
+		]
+	}
 ]
 
-//res de response e req de request
 const server = http.createServer((req, res) => {
-    res.statusCode = 200
-    res.setHeader('Content-Type', 'application/json; charset=utf-8')
+	
+  console.log("Cabeçalhos da 'req' (Requisição)", req.headers);
+  
+  // Cabeçalho de resposta
+  res.setHeader('Content-Type', 'application/json');
+  
+  if (req.url == "/" && req.method == "GET") {
+	  // Informações da Requisição
+	  console.log(`Método: ${req.method} e URL: ${req.url}`);
+	  // Definiu o código de status
+	  res.statusCode = 200;
+	  res.end(JSON.stringify({data: "Página Inicial"}));
+  } else if (req.url == "/contato" && req.method == "GET") {
+	  // Informações da Requisição
+	  console.log(`Método: ${req.method} e URL: ${req.url}`);
+	  // Definiu o código de status
+	  res.statusCode = 200;
+	  // Mensagem enviada
+	  res.end(JSON.stringify(contatoObj));
+  } else if (req.url == "/produtos" && req.method == "GET") {
+	  // Informações da Requisição
+	  console.log(`Método: ${req.method} e URL: ${req.url}`);
+	  // Definiu o código de status
+	  res.statusCode = 200;
+	  // Mensagem enviada
+	  res.end(JSON.stringify(produtosLista));
+  } else if (req.url == "/status" && req.method == "GET") {
+	  // Informações da Requisição
+	  console.log(`Método: ${req.method} e URL: ${req.url}`);
+	  // Definiu o código de status
+	  res.statusCode = 200;
+	  // Mensagem enviada
+	  res.end(JSON.stringify({data: {status: "ok"}}));
+  } else {
+	// Informações da Requisição
+	console.log(`Método: ${req.method} e URL: ${req.url} Não existente.`);
+	// Definiu o código de status
+	res.statusCode = 404;  
+	// Mensagem enviada
+	res.end(JSON.stringify({"error": "Página não encontrada."}));
+  }
+});
 
-    if(req.method == "GET" && req.url == "/contato"){
-        return res.end(
-            JSON.stringify([
-                {data: {"número_telefone": "67-99999-9999", endereco: "Rua Alegria, 99, Centro"}}
-            ])
-        )
-    }
-
-    if(req.method == "GET" && req.url == "/produtos"){
-        return res.end(
-            JSON.stringify(produtos)
-        )
-    }
-
-    res.end(JSON.stringify({data: "Página inicial"}))
-})
-
-server.listen(PORTA, () => {
-    console.log(`Servidor funcionando na porta ${PORTA}`)
-})
-
-//o servidor não devolveria uma resposta para o usuario, pois a requisição não seria resolvida assim o serividor iria ficar carregando infinitamente
+server.listen(port, () => {
+    console.log(`Servidor escutando na porta ${port}`);
+});
